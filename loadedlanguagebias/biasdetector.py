@@ -120,6 +120,7 @@ st.markdown(
             border-radius: 5px;
             padding: 1px 4px;
             font-weight: 700;
+            color: #111111 !important;
         }
 
         .highlight-extreme {
@@ -127,6 +128,7 @@ st.markdown(
             border-radius: 5px;
             padding: 1px 4px;
             font-weight: 700;
+            color: #111111 !important;
         }
 
         .highlight-loaded {
@@ -134,6 +136,7 @@ st.markdown(
             border-radius: 5px;
             padding: 1px 4px;
             font-weight: 700;
+            color: #111111 !important;
         }
 
         .highlight-framing {
@@ -141,6 +144,7 @@ st.markdown(
             border-radius: 5px;
             padding: 1px 4px;
             font-weight: 700;
+            color: #111111 !important;
         }
 
         .highlight-opinion {
@@ -148,6 +152,7 @@ st.markdown(
             border-radius: 5px;
             padding: 1px 4px;
             font-weight: 700;
+            color: #111111 !important;
         }
 
         .pill {
@@ -165,6 +170,117 @@ st.markdown(
             font-size: 0.82rem;
             color: #777777;
             margin-top: 1rem;
+        }
+
+        /* ------------------------------------------------------
+           VISIBILITY FIXES
+           This section fixes Streamlit's default button and checkbox colors.
+        ------------------------------------------------------ */
+
+        /* Make input labels and optional check text black */
+        div[data-testid="stTextInput"] label,
+        div[data-testid="stTextArea"] label,
+        div[data-testid="stCheckbox"] label,
+        div[data-testid="stCheckbox"] label *,
+        label[data-baseweb="checkbox"],
+        label[data-baseweb="checkbox"] *,
+        .stCheckbox,
+        .stCheckbox * {
+            color: #111111 !important;
+            font-weight: 700 !important;
+        }
+
+        /* Make captions and helper text readable */
+        div[data-testid="stCaptionContainer"],
+        div[data-testid="stCaptionContainer"] *,
+        .stCaptionContainer,
+        .stCaptionContainer * {
+            color: #666666 !important;
+        }
+
+        /* Make expanders readable */
+        div[data-testid="stExpander"] summary,
+        div[data-testid="stExpander"] summary *,
+        details summary,
+        details summary * {
+            color: #111111 !important;
+            font-weight: 800 !important;
+        }
+
+        /* Make expander body text readable */
+        div[data-testid="stExpander"] div,
+        div[data-testid="stExpander"] p,
+        div[data-testid="stExpander"] span {
+            color: #111111 !important;
+        }
+
+        /* Make text inputs and text areas readable */
+        input,
+        textarea,
+        div[data-baseweb="input"] input,
+        div[data-baseweb="textarea"] textarea {
+            color: #ffffff !important;
+            background-color: #20212a !important;
+            caret-color: #ffffff !important;
+        }
+
+        /* Make all buttons black */
+        div.stButton > button,
+        div.stDownloadButton > button,
+        button[data-testid="baseButton-secondary"],
+        button[data-testid="baseButton-primary"] {
+            background-color: #111111 !important;
+            border: 1px solid #111111 !important;
+            border-radius: 12px !important;
+            box-shadow: none !important;
+        }
+
+        /* Make all text inside buttons white and keep it white */
+        div.stButton > button *,
+        div.stDownloadButton > button *,
+        button[data-testid="baseButton-secondary"] *,
+        button[data-testid="baseButton-primary"] *,
+        div.stButton > button p,
+        div.stDownloadButton > button p,
+        button[data-testid="baseButton-secondary"] p,
+        button[data-testid="baseButton-primary"] p {
+            color: #ffffff !important;
+            font-weight: 900 !important;
+        }
+
+        /* Keep buttons black on hover, active, and focus */
+        div.stButton > button:hover,
+        div.stButton > button:focus,
+        div.stButton > button:active,
+        div.stDownloadButton > button:hover,
+        div.stDownloadButton > button:focus,
+        div.stDownloadButton > button:active,
+        button[data-testid="baseButton-secondary"]:hover,
+        button[data-testid="baseButton-secondary"]:focus,
+        button[data-testid="baseButton-secondary"]:active,
+        button[data-testid="baseButton-primary"]:hover,
+        button[data-testid="baseButton-primary"]:focus,
+        button[data-testid="baseButton-primary"]:active {
+            background-color: #000000 !important;
+            border-color: #000000 !important;
+            color: #ffffff !important;
+            box-shadow: none !important;
+        }
+
+        /* Keep text inside buttons white on hover, active, and focus */
+        div.stButton > button:hover *,
+        div.stButton > button:focus *,
+        div.stButton > button:active *,
+        div.stDownloadButton > button:hover *,
+        div.stDownloadButton > button:focus *,
+        div.stDownloadButton > button:active *,
+        button[data-testid="baseButton-secondary"]:hover *,
+        button[data-testid="baseButton-secondary"]:focus *,
+        button[data-testid="baseButton-secondary"]:active *,
+        button[data-testid="baseButton-primary"]:hover *,
+        button[data-testid="baseButton-primary"]:focus *,
+        button[data-testid="baseButton-primary"]:active * {
+            color: #ffffff !important;
         }
     </style>
     """,
@@ -244,24 +360,29 @@ anonymous_markers = ["anonymous", "unnamed source", "sources familiar", "person 
 # TEXT PROCESSING FUNCTIONS
 # ------------------------------------------------------
 def clean_text(text):
+    """Removes extra spaces from text."""
     return re.sub(r"\s+", " ", text).strip()
 
 
 def split_into_sentences(text):
+    """Splits article text into sentences using punctuation."""
     sentences = re.split(r"(?<=[.!?])\s+", text.strip())
     return [sentence.strip() for sentence in sentences if sentence.strip()]
 
 
 def get_words(text):
+    """Returns words from text in lowercase."""
     return re.findall(r"\b[\w'-]+\b", text.lower())
 
 
 def count_marker_matches(text, markers):
+    """Counts how many times marker words or phrases appear."""
     lowered = text.lower()
     return sum(lowered.count(marker.lower()) for marker in markers)
 
 
 def detect_tone(sentence):
+    """Gives a simple tone label based on positive and negative wording."""
     lowered = sentence.lower()
 
     negative_words = [
@@ -285,6 +406,7 @@ def detect_tone(sentence):
 
 
 def get_score_description(score):
+    """Explains the bias score in plain language."""
     if score < 15:
         return "Low: The article has a mostly neutral wording pattern based on this prototype."
     if score < 35:
@@ -295,6 +417,7 @@ def get_score_description(score):
 
 
 def find_bias_in_sentence(sentence):
+    """Looks for bias indicators in one sentence."""
     sentence_results = []
     lowered_sentence = sentence.lower()
 
@@ -323,6 +446,7 @@ def find_bias_in_sentence(sentence):
 
 
 def calculate_bias_score(text, results):
+    """Calculates a bias score using sentence flags, term density, and context markers."""
     sentences = split_into_sentences(text)
     words = get_words(text)
 
@@ -359,6 +483,7 @@ def calculate_bias_score(text, results):
 
 
 def analyze_text(text):
+    """Runs the full bias analysis on article text."""
     text = clean_text(text)
     sentences = split_into_sentences(text)
     all_results = []
@@ -371,6 +496,7 @@ def analyze_text(text):
 
 
 def get_category_counts(results):
+    """Counts how many findings appear in each category."""
     counts = {}
     for item in results:
         counts[item["category"]] = counts.get(item["category"], 0) + 1
@@ -378,6 +504,7 @@ def get_category_counts(results):
 
 
 def get_top_category(results):
+    """Returns the category with the most findings."""
     counts = get_category_counts(results)
     if not counts:
         return "None"
@@ -387,6 +514,7 @@ def get_top_category(results):
 # ARTICLE FETCHING
 # ------------------------------------------------------
 def fetch_article_from_url(url):
+    """Loads headline and paragraph text from a webpage."""
     headers = {"User-Agent": "Mozilla/5.0"}
     response = requests.get(url, headers=headers, timeout=10)
     response.raise_for_status()
@@ -413,6 +541,7 @@ def fetch_article_from_url(url):
 # HIGHLIGHTING
 # ------------------------------------------------------
 def build_highlighted_html(text, results):
+    """Builds HTML with highlighted flagged terms."""
     if not text:
         return ""
 
@@ -462,6 +591,7 @@ def build_highlighted_html(text, results):
 # HEADLINE ANALYSIS
 # ------------------------------------------------------
 def compare_headline_to_article(headline, article_text):
+    """Compares the headline language to the article body."""
     headline = clean_text(headline)
     article_text = clean_text(article_text)
 
@@ -513,6 +643,7 @@ def compare_headline_to_article(headline, article_text):
 # SOURCE TRANSPARENCY CHECK
 # ------------------------------------------------------
 def calculate_transparency_score(article_text, headline, user_checks):
+    """Calculates a source transparency score using automatic checks and optional user checklist answers."""
     text = clean_text(article_text)
     lowered = text.lower()
 
@@ -555,6 +686,7 @@ def calculate_transparency_score(article_text, headline, user_checks):
 # REPORT CREATION
 # ------------------------------------------------------
 def create_report(headline, article_text, score, results, headline_analysis=None, transparency=None):
+    """Creates the downloadable plain-text analysis report."""
     category_counts = get_category_counts(results)
     flagged_sentence_count = len(set(item["sentence"] for item in results))
     total_sentences = len(split_into_sentences(article_text))
